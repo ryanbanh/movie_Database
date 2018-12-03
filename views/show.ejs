@@ -1,0 +1,81 @@
+<% include partials/header %>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12" id="synopsis">
+            <div class="well box_shadow adjust-height">
+                <div class="movie-image">
+                    <img onerror="this.style.display='none'" class="img-responsive" src="https://image.tmdb.org/t/p/original/<%=data["poster_path"] %>" >
+                </div>
+                <div class="synopsis">
+                    <h4><%=title%></h4>
+                    <p><%=data["overview"]%></p>
+                    <button type="button" class="btn btn-lg btn-primary btn-primary" onclick="window.history.back();">Go Back</button>
+                </div>
+            </div>
+            
+            <div class="well box_shadow" id="reviews">
+               <% if (data["results"].length) { %>
+                    <% data["results"].forEach(function(movie){ %>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <strong><%=movie["author"] %></strong>
+                                <p><%=movie["content"] %></p>
+                                <hr>
+                            </div>
+                        </div>
+                <% }) %>
+                <% } else{ %>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p>There are no reviews for this movie.</p>
+                            </div>
+                        </div>
+                <%} %> 
+            </div>
+            
+               <div class="well box_shadow" id="casts">
+                <% if (data["credits"]["cast"].length) { %>
+                    <% data["credits"]["cast"].forEach(function(person){ %>
+                        <div class="col-md-2 col-sm-3">
+                            <div class="thumbnail">
+                                <img onerror="this.src='/stylesheets/image_placeholder.png'" src="https://image.tmdb.org/t/p/w200/<%=person["profile_path"] %>">
+                                <div class="caption"><%=person["name"] %> as <%=person["character"] %></div>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                        <div>
+                            <p>There is no cast information available for this movie.</p>
+                        </div>
+                    <% } %> 
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+      function goToByScroll(id){
+          // Remove "link" from the ID
+        id = id.replace("link", "");
+          // Scroll
+        $('html,body').animate({
+            scrollTop: $("#"+id).offset().top},
+            'slow');
+    }
+    
+    $("li a").click(function(e) { 
+          // Prevent a page reload when a link is pressed
+        e.preventDefault(); 
+          // Call the scroll function
+        goToByScroll($(this).attr("id"));           
+    });
+    
+    $(".arrow-down").click(function(e) { 
+          // Prevent a page reload when a link is pressed
+        e.preventDefault(); 
+          // Call the scroll function
+        goToByScroll($(this).attr("id"));           
+    });
+</script>  

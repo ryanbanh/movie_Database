@@ -1,0 +1,120 @@
+<% include partials/header2 %>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+<div class="container">
+  <header class="jumbotron box_shadow">
+  <h1>Movie Database</h1>
+  <div class="row">
+    <div class="searchForm">
+    <form action="/movies" method="GET">
+      <div class="form-group">
+        <input class="form-control" type="text" placeholder="Search for a movie..." name="search" required>
+      </div>
+
+        <div class="panel-group">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                <a data-toggle="collapse" href="#collapse1">Filters</a>
+              </h4>
+            </div>
+            <div id="collapse1" class="panel-collapse collapse">
+              <div class="panel-body">
+                <h5>Genres</h5>
+                
+                <div class="form-group">
+                  <select name="genre" class="form-control" id="sel1">
+                    <option value="0">None</option>
+                    <% for (var id in genres) { %>
+                      <option value=<%=id%>><%=genres[id]%></option>
+                    <% } %>
+                  </select>
+                </div>
+              
+              </div>
+              <div class="panel-body">
+                <h5>Year</h5>
+                <input class="form-control" type="number" placeholder="YYYY" name="year" min="1900" max="2099" step="1">
+              </div>
+            </div>
+          </div>
+        </div>
+      <div class="form-group">
+        <input class="btn btn-lg btn-primary btn-block" type="submit">
+      </div>
+    </form>
+    </div>
+  </div>
+  </header>
+</div>
+
+
+
+
+  <% var movieFilters = []; %>
+  <% data["results"].forEach(function(movie){ %>
+    <% if ((movie["genre_ids"].indexOf(genreFilter) >= 0 && parseInt(movie["release_date"].slice(0,4)) === yearFilter) || (movie["genre_ids"].indexOf(genreFilter) >= 0 && isNaN(yearFilter)) || (genreFilter === 0 && parseInt(movie["release_date"].slice(0,4)) === yearFilter) || (genreFilter === 0 && isNaN(yearFilter))) { %>
+    <% movieFilters.push(movie) %>
+  <% } %>
+  <% }) %>
+
+
+  <% if (movieFilters.length > 0){ %>
+    <% data["results"].forEach(function(movie){ %>
+    
+    <% if ((movie["genre_ids"].indexOf(genreFilter) >= 0 && parseInt(movie["release_date"].slice(0,4)) === yearFilter) || (movie["genre_ids"].indexOf(genreFilter) >= 0 && isNaN(yearFilter)) || (genreFilter === 0 && parseInt(movie["release_date"].slice(0,4)) === yearFilter) || (genreFilter === 0 && isNaN(yearFilter))) { %>
+        <div class="tile_card" id="enlarge" data-aos="zoom-in">
+            <div class="details_div">
+                <div class="movie_header">
+                    <img onerror="this.style.display='none'" class="movie_poster" src="https://image.tmdb.org/t/p/original/<%=movie["poster_path"] %>">
+                    <h1><%=movie["title"] %></h1>
+                    <h4><%=movie["release_date"].slice(0,4)%></h4>
+                    <span class="ratings"><%=movie["vote_average"] %></span>
+                    <% movie["genre_ids"].forEach(function(id){ %>
+                     <p class="movie_genre"><%=genres[id]%></p>
+                    <% }) %>
+                </div>
+                <div class="movie_description">
+                  <% if (movie["overview"].length > 300){ %>
+                    <p class="text"><%=movie["overview"].substring(0,350) %>...</p>
+                 <% } else { %>
+                     <p class="text"><%=movie["overview"]%></p>
+                 <% } %>
+                  
+                </div>
+                <div class="movie_moreinfo">
+                  <a href="/<%=movie["id"]%>/<%=movie["title"]%>">More Info</a>
+                </div>
+            </div>
+            <div class="posterbackdrop_div">
+                <img class="posterbackdrop_img" onerror="this.style.display='none'" src="https://image.tmdb.org/t/p/original/<%=movie["backdrop_path"] %>" >
+            </div>
+        </div>
+        
+      <% } %>
+    <% }) %>
+    
+    
+  <% } else if (query === undefined) { %>
+  <% } else { %>
+  <div class="container">
+    <div class="error">
+      <% if (isNaN(yearFilter) && genreFilter === 0 ) { %>
+          <p>Uh oh! There are no search results for "<%= query %>". Try searching for another movie.</p>
+          <img class="svg" src="/stylesheets/Error_404.svg">
+      <% } else if (isNaN(yearFilter) === false && genreFilter === 0) { %>
+          <p>Uh oh! There are no search results for "<%= query %>" in the year "<%= yearFilter %>". Try searching for another movie.</p>
+          <img class="svg" src="/stylesheets/Error_404.svg">
+      <% } else if (isNaN(yearFilter) && genreFilter !== 0) { %>
+          <p>Uh oh! There are no search results for "<%= query %>" with the genre of "<%= genres[genreFilter] %>". Try searching for another movie.</p>
+          <img class="svg" src="/stylesheets/Error_404.svg">
+      <% } else { %>
+           <p>Uh oh! There are no search results for "<%= query %>" with the genre of "<%= genres[genreFilter] %>" in the year "<%= yearFilter %>". Try searching for another movie.</p>
+           <img class="svg" src="/stylesheets/Error_404.svg">
+      <% } %>
+    <% } %>
+    </div>
+  </div>
+
+<% include partials/footer %>

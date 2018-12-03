@@ -1,0 +1,54 @@
+<% include partials/header2 %>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+<div class="container">
+  <header class="jumbotron box_shadow">
+  <h1>Movie Database</h1>
+  <div class="row">
+    <div class="searchForm">
+    <form action="/movies" method="GET">
+      <div class="form-group">
+        <input class="form-control" type="text" placeholder="Search for a movie..." name="search" required>
+      </div>
+
+        <div class="panel-group">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                <a data-toggle="collapse" href="#collapse1">Filters</a>
+              </h4>
+            </div>
+            <div id="collapse1" class="panel-collapse collapse">
+              <div class="panel-body">
+                <h5>Genres</h5>
+                
+                <div class="form-group">
+                  <select name="genre" class="form-control" id="sel1">
+                    <option value="0">None</option>
+                    <% for (var id in genres) { %>
+                      <option value=<%=id%>><%=genres[id]%></option>
+                    <% } %>
+                  </select>
+                </div>
+              
+              </div>
+              <div class="panel-body">
+                <h5>Year</h5>
+                <input class="form-control" type="number" placeholder="YYYY" name="year" min="1900" max="2099" step="1">
+              </div>
+            </div>
+          </div>
+        </div>
+      <div class="form-group">
+        <input class="btn btn-lg btn-primary btn-block" type="submit">
+      </div>
+    </form>
+    </div>
+  </div>
+  </header>
+</div>
+
+
+
+<% include partials/footer %>
